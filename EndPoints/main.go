@@ -59,6 +59,24 @@ func resta(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "La resta es %v+%v=%v", num1, num2, result)
 }
 
+func multiplicacion(w http.ResponseWriter, r *http.Request) {
+	archivo := new(ArchivoJson)
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "Error")
+		return
+	}
+	json.Unmarshal(reqBody, &archivo)
+
+	var num1, num2 int
+	num1 = archivo.Numero1
+	num2 = archivo.Numero2
+	fmt.Println(archivo)
+	var result int
+	result = num1 * num2
+	fmt.Fprintf(w, "La multiplicacion es %v*%v=%v", num1, num2, result)
+}
+
 func main() {
 
 	fmt.Println("un server papu xd")
@@ -68,6 +86,7 @@ func main() {
 	router.HandleFunc("/suma", suma).Methods("POST")
 	router.HandleFunc("/info", info).Methods("GET")
 	router.HandleFunc("/resta", resta).Methods("POST")
+	router.HandleFunc("/multi", multiplicacion).Methods("POST")
 
 
 	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
